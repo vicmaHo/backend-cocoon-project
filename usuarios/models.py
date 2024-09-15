@@ -9,13 +9,13 @@ class Usuario(models.Model):
     # contrasena = models.CharField(max_length=20)
     telefono = models.CharField(max_length=20)
     def __str__(self):
-        return self.user.username
+        return f"{self.user.id} - { self.user.username}"
 
 class Arrendador(models.Model):
     usuario = models.OneToOneField(Usuario, on_delete=models.CASCADE, primary_key=True)
     ocupacion = models.CharField(max_length=50)
     def __str__(self):
-        return f"{self.usuario.user.username} - {self.ocupacion}"
+        return f"{self.usuario.user.id} - {self.usuario.user.username} - {self.ocupacion}"
     
 
 class Arrendatario(models.Model):
