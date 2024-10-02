@@ -5,6 +5,7 @@ from usuarios.models import Arrendador
 # Create your models here.
 class Propiedad(models.Model):
     arrendador = models.ForeignKey(Arrendador, on_delete=models.CASCADE)  # Relación con Arrendador
+    nombre = models.CharField(max_length=50, default='')
     tipo_vivienda = models.CharField(max_length=50)
     descripcion = models.TextField()
     direccion = models.CharField(max_length=50)
