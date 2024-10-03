@@ -1,7 +1,8 @@
 # Rutas de autenticación, login, register y test de autenticación
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from usuarios.serializers import UserSerializer
+from usuarios.serializers import UserSerializer, ArrendatarioSerializer, ArrendadorSerializer, EstudianteSerializer
+from usuarios.models import Usuario, Arrendatario, Arrendador, Estudiante
 from django.contrib.auth.models import User
 from rest_framework.authtoken.models import Token
 from rest_framework import status
@@ -14,33 +15,148 @@ from rest_framework.authentication import TokenAuthentication
 # Create your views here.
 @api_view(['POST'])
 def register(request):
+    
     """
     Registro de un nuevo usuario en la plataforma, generando un token de autenticación
+    Primero comprueba que tipo de usuario se va a registrar para despues crear un User de Django
+    Luego crea un Usuario perteneciente al modelo propio, en base a esos crea el tipo de usuario
+    que se mande en la petición.
     """
-    serializer = UserSerializer(data=request.data)
-    if serializer.is_valid():
-        serializer.save()
-        user = User.objects.get(username=serializer.data['username'])
-        user.set_password(serializer.data['password'])
-        user.save()
+    # Compruebo si el tipo de usuario es arrendaddor
+    if request.data["is_arrendador"] == True:
+       # si es arrendador creo un User luego un Usuario y despues un Arrendador 
+        user_data = extraer_datos_usuario(request)
+        # Creo el serializer
+        serializer = UserSerializer(data=user_data)
+        if serializer.is_valid():
+            
+            user = crear_user(serializer)
+            user.save()
+            
+            # Creo el Usuario del modelo propio
+            usuario = crear_usuario_normal(serializer, request)
+            usuario.save()
+            
+            # Creo el Arrendador
+            arrendador = Arrendador.objects.create(
+                usuario = usuario,
+                ocupacion = request.data['ocupacion']
+            )
+            arrendador.save()
+            
+            # Creo el token
+            token = Token.objects.create(user=user)
+            arrendador_serializer = ArrendadorSerializer(arrendador)
+            return Response({'token': token.key, 'created': True, 'arrendador': arrendador_serializer.data},
+                            status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            
         
-        token = Token.objects.create(user=user)
-        return Response({'token': token.key, 'user': serializer.data}, status=status.HTTP_201_CREATED)
-    else:
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    elif request.data["is_estudiante"] == True:
+        
+        user_data = extraer_datos_usuario(request)
+        serializer = UserSerializer(data=user_data)
+        if serializer.is_valid():
+            user = crear_user(serializer)
+            user.save()
+            
+            # Creo el usuario del modelo propio
+            usuario = crear_usuario_normal(serializer, request)
+            usuario.save()
+            
+            # Creo arrendatario
+            arrendatario = Arrendatario.objects.create(
+                usuario = usuario,
+            )
+            arrendatario.save()
+            
+            # Creo el estudiante
+            estudiante = Estudiante.objects.create(
+                arrendatario = arrendatario,
+                constancia_universidad = request.data['constancia_universidad'],
+                universidad = request.data['universidad']
+            )
+            estudiante.save()
+            
+            # Creo el token
+            token = Token.objects.create(user=user)
+            estudiante_serializer = EstudianteSerializer(estudiante)
+            
+            return Response({'token': token.key,
+                             'created': True,
+                            'estudiante': estudiante_serializer.data},
+                            status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            
+    else: 
+        user_data = extraer_datos_usuario(request)
+        serializer = UserSerializer(data=user_data)
+        if serializer.is_valid():
+            user = crear_user(serializer)
+            user.save()
+            
+            # Creo el usuario del modelo propio
+            usuario = crear_usuario_normal(serializer, request)
+            usuario.save()
+            
+            # Creo arrendatario
+            arrendatario = Arrendatario.objects.create(
+                usuario = usuario
+            )
+            
+            arrendatario.save()
+            
+            token = Token.objects.create(user=user)
+            
+            arrendatario_serializer = ArrendatarioSerializer(arrendatario)
+            return Response({'token': token.key,
+                             'created': True,
+                             'arrendatario': arrendatario_serializer.data}, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['POST'])
 def login(request):
     """
     Login de un usuario, generando un token de autenticación
     """
-    user =get_object_or_404 (User, username=request.data['username']) 
+    user =get_object_or_404 (User, username=request.data['username'])
     
-    if not user.check_password(request.data['password']): 
-        return Response({'error': 'Invalid Credentials'}, status=status.HTTP_400_BAD_REQUEST) 
+    if not user.check_password(request.data['password']):
+        return Response({'error': 'Invalid Credentials'}, status=status.HTTP_400_BAD_REQUEST)
     
-    token, created = Token.objects.get_or_create(user=user) 
+    token, created = Token.objects.get_or_create(user=user)
     
-    serializer = UserSerializer(instance=user) 
+    serializer = UserSerializer(instance=user)
     
     return Response({'token': token.key, 'created': created, 'user': serializer.data}, status=status.HTTP_200_OK)
+
+
+#### Funciones Auxiliares ####
+def extraer_datos_usuario(request):
+    user_data = {'username': request.data['username'], 
+                'email': request.data['email'], 
+                'password': request.data['password'],
+                'last_name': request.data['last_name'],
+                'first_name': request.data['first_name']
+                }
+    return user_data
+
+def crear_user(serializer):
+    serializer.save()
+    user = User.objects.get(username=serializer.data['username'])
+    user.set_password(serializer.data['password'])
+    user.email = serializer.data['email']
+    user.first_name = serializer.data['first_name']
+    user.last_name = serializer.data['last_name']
+    # Debo retornar el objeto y guardarlo en donde lo vaya a usar
+    return user
+
+def crear_usuario_normal(serializer, request):
+    usuario = Usuario.objects.create(
+        user=User.objects.get(username=serializer.data['username']),
+        telefono = request.data['telefono']
+    )
+    return usuario      
