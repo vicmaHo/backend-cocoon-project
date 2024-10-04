@@ -128,7 +128,7 @@ def login(request):
     
     token, created = Token.objects.get_or_create(user=user)
     
-    tipo_usuario = Usuario.objects.get(id=user.id).tipo
+    tipo_usuario = Usuario.objects.get(user_id=user.id).tipo
     
     serializer = UserSerializer(instance=user)
     
