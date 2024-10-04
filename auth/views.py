@@ -34,7 +34,7 @@ def register(request):
             user.save()
             
             # Creo el Usuario del modelo propio
-            usuario = crear_usuario_normal(serializer, request)
+            usuario = crear_usuario_normal(serializer, request, 'arrendador')
             usuario.save()
             
             # Creo el Arrendador
@@ -62,7 +62,7 @@ def register(request):
             user.save()
             
             # Creo el usuario del modelo propio
-            usuario = crear_usuario_normal(serializer, request)
+            usuario = crear_usuario_normal(serializer, request, 'estudiante')
             usuario.save()
             
             # Creo arrendatario
@@ -98,7 +98,7 @@ def register(request):
             user.save()
             
             # Creo el usuario del modelo propio
-            usuario = crear_usuario_normal(serializer, request)
+            usuario = crear_usuario_normal(serializer, request, 'arrendatario')
             usuario.save()
             
             # Creo arrendatario
@@ -129,9 +129,11 @@ def login(request):
     
     token, created = Token.objects.get_or_create(user=user)
     
+    tipo_usuario = Usuario.objects.get(id=user.id).tipo
+    
     serializer = UserSerializer(instance=user)
     
-    return Response({'token': token.key, 'created': created, 'user': serializer.data}, status=status.HTTP_200_OK)
+    return Response({'token': token.key, 'tipo': tipo_usuario,'created': created, 'user': serializer.data}, status=status.HTTP_200_OK)
 
 
 #### Funciones Auxiliares ####
@@ -154,9 +156,10 @@ def crear_user(serializer):
     # Debo retornar el objeto y guardarlo en donde lo vaya a usar
     return user
 
-def crear_usuario_normal(serializer, request):
+def crear_usuario_normal(serializer, request, tipo):
     usuario = Usuario.objects.create(
         user=User.objects.get(username=serializer.data['username']),
-        telefono = request.data['telefono']
+        telefono = request.data['telefono'],
+        tipo = tipo
     )
     return usuario      

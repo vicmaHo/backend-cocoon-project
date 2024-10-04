@@ -8,8 +8,9 @@ class Usuario(models.Model):
     # correo = models.EmailField(max_length=50, unique=True)
     # contrasena = models.CharField(max_length=20)
     telefono = models.CharField(max_length=20)
+    tipo = models.CharField(max_length=20, default='')
     def __str__(self):
-        return f"{self.user.id} - { self.user.username}"
+        return f"{self.user.id} - { self.user.username} - {self.tipo}"
 
 class Arrendador(models.Model):
     usuario = models.OneToOneField(Usuario, on_delete=models.CASCADE, primary_key=True)

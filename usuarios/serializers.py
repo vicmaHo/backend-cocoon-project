@@ -40,6 +40,7 @@ class UserSerializer(serializers.ModelSerializer):
 class ArrendatarioSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(source='usuario.user.id', read_only=True)
     username = serializers.CharField(source='usuario.user.username', read_only=True)
+    tipo = serializers.CharField(source='usuario.tipo', read_only=True)
     email = serializers.EmailField(source='usuario.user.email', read_only=True)
     first_name = serializers.CharField(source='usuario.user.first_name', read_only=True)
     last_name = serializers.CharField(source='usuario.user.last_name', read_only=True)
@@ -50,6 +51,7 @@ class ArrendatarioSerializer(serializers.ModelSerializer):
         fields = [
             'id', 
             'username', 
+            'tipo',
             'email', 
             'first_name', 
             'last_name', 
@@ -59,6 +61,7 @@ class ArrendatarioSerializer(serializers.ModelSerializer):
 class EstudianteSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(source='usuario.user.id', read_only=True)
     username = serializers.CharField(source='arrendatario.usuario.user.username', read_only=True)
+    tipo = serializers.CharField(source='arrendatario.usuario.tipo', read_only=True)
     email = serializers.EmailField(source='arrendatario.usuario.user.email', read_only=True)
     first_name = serializers.CharField(source='arrendatario.usuario.user.first_name', read_only=True)
     last_name = serializers.CharField(source='arrendatario.usuario.user.last_name', read_only=True)
@@ -69,6 +72,7 @@ class EstudianteSerializer(serializers.ModelSerializer):
         fields = [
             'id',
             'username', 
+            'tipo',
             'email', 
             'first_name', 
             'last_name', 
@@ -80,6 +84,7 @@ class EstudianteSerializer(serializers.ModelSerializer):
 class ArrendadorSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(source='usuario.user.id', read_only=True)
     username = serializers.CharField(source='usuario.user.username', read_only=True)
+    tipo = serializers.CharField(source='usuario.tipo', read_only=True)
     email = serializers.EmailField(source='usuario.user.email', read_only=True)
     first_name = serializers.CharField(source='usuario.user.first_name', read_only=True)
     last_name = serializers.CharField(source='usuario.user.last_name', read_only=True)
@@ -92,6 +97,7 @@ class ArrendadorSerializer(serializers.ModelSerializer):
         fields = [
             'id', 
             'username', 
+            'tipo',
             'email', 
             'first_name', 
             'last_name', 
