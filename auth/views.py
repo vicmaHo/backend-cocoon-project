@@ -8,10 +8,6 @@ from rest_framework.authtoken.models import Token
 from rest_framework import status
 from django.shortcuts import get_object_or_404
 
-
-from rest_framework.decorators import authentication_classes, permission_classes
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.authentication import TokenAuthentication
 # Create your views here.
 @api_view(['POST'])
 def register(request):
@@ -47,7 +43,7 @@ def register(request):
             # Creo el token
             token = Token.objects.create(user=user)
             arrendador_serializer = ArrendadorSerializer(arrendador)
-            return Response({'token': token.key, 'created': True, 'arrendador': arrendador_serializer.data},
+            return Response({'token': token.key, 'tipo': usuario.tipo,'created': True, 'datos': arrendador_serializer.data},
                             status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -84,8 +80,9 @@ def register(request):
             estudiante_serializer = EstudianteSerializer(estudiante)
             
             return Response({'token': token.key,
+                             'tipo': usuario.tipo,
                              'created': True,
-                            'estudiante': estudiante_serializer.data},
+                            'datos': estudiante_serializer.data},
                             status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -112,15 +109,17 @@ def register(request):
             
             arrendatario_serializer = ArrendatarioSerializer(arrendatario)
             return Response({'token': token.key,
+                             'tipo': usuario.tipo,
                              'created': True,
-                             'arrendatario': arrendatario_serializer.data}, status=status.HTTP_201_CREATED)
+                             'datos': arrendatario_serializer.data}, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['POST'])
 def login(request):
     """
-    Login de un usuario, generando un token de autenticación
+    Login de un usuario, generando un token de autenticación y mandando el tipo de usuario junto
+    con sus respectivos datos principales.
     """
     user =get_object_or_404 (User, username=request.data['username'])
     
@@ -133,7 +132,7 @@ def login(request):
     
     serializer = UserSerializer(instance=user)
     
-    return Response({'token': token.key, 'tipo': tipo_usuario,'created': created, 'user': serializer.data}, status=status.HTTP_200_OK)
+    return Response({'token': token.key, 'tipo': tipo_usuario,'created': created, 'datos': serializer.data}, status=status.HTTP_200_OK)
 
 
 #### Funciones Auxiliares ####
