@@ -90,7 +90,6 @@ class ArrendadorSerializer(serializers.ModelSerializer):
     last_name = serializers.CharField(source='usuario.user.last_name', read_only=True)
     telefono = serializers.CharField(source='usuario.telefono', read_only=True)
     ocupacion = serializers.CharField()
-    password = serializers.CharField(source='usuario.user.password', read_only=True)
 
     class Meta:
         model = Arrendador
@@ -103,5 +102,4 @@ class ArrendadorSerializer(serializers.ModelSerializer):
             'last_name', 
             'telefono', 
             'ocupacion',
-            'password'
         ]
