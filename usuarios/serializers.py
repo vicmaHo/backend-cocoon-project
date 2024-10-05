@@ -2,35 +2,6 @@ from .models import Usuario, Arrendatario, Arrendador, Estudiante
 from rest_framework import serializers
 from django.contrib.auth.models import User
 
-# Mediante anidacion de serializers
-# class UserSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = User
-#         fields = ['id', 'username', 'email', 'first_name', 'last_name']
-
-# class UsuarioSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = Usuario
-#         fields = ['id', 'username', 'email', 'first_name', 'last_name', 'telefono']
-        
-# class ArrendatarioSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = Arrendatario
-#         fields = '__all__'
-
-# class ArrendadorSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = Arrendador
-#         fields = '__all__'
-
-# class EstudianteSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = Estudiante
-#         fields = '__all__'
-
-
-# Sin anidacion de serializers
-
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
