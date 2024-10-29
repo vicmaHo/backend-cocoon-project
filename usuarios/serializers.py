@@ -8,6 +8,7 @@ class UserSerializer(serializers.ModelSerializer):
         fields  = ['id', 'username', 'email', 'last_name', 'first_name']
 
 
+
 class ArrendatarioSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(source='usuario.user.id', read_only=True)
     username = serializers.CharField(source='usuario.user.username', read_only=True)
