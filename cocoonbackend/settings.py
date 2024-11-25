@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken', # para autenticar con token
     'usuarios',
     'propiedades',
+    'reservas',
 ]
 
 MIDDLEWARE = [
