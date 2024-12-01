@@ -16,6 +16,8 @@ from pathlib import Path
 import os
 import dj_database_url
 
+from decouple import config
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -154,3 +156,12 @@ CORS_ALLOWED_ORIGINS = [
 
 
 #CORS_ALLOW_CREDENTIALS = True
+
+# Configuracion de email backend para recuperacion de contrasena
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = config('MAIL_COCOON_PROJECT')
+EMAIL_HOST_PASSWORD = config('MAIL_PASS_COCOON_PROJECT')
+DEFAULT_FROM_EMAIL = config('MAIL_COCOON_PROJECT')
