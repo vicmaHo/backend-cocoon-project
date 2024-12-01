@@ -1,12 +1,24 @@
 # Rutas de autenticación, login, register y test de autenticación
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from auth.serializer import PasswordResetRequestSerializer, PasswordResetSerializer
 from usuarios.serializers import UserSerializer, ArrendatarioSerializer, ArrendadorSerializer, EstudianteSerializer
 from usuarios.models import Usuario, Arrendatario, Arrendador, Estudiante
 from django.contrib.auth.models import User
 from rest_framework.authtoken.models import Token
 from rest_framework import status
 from django.shortcuts import get_object_or_404
+
+
+# Para recuperacion de contrasena
+from rest_framework.views import APIView
+from django.utils.http import urlsafe_base64_encode
+from django.utils.encoding import force_bytes
+from django.contrib.auth.tokens import default_token_generator
+from django.core.mail import send_mail
+from decouple import config
+
+
 
 # Create your views here.
 @api_view(['POST'])
@@ -162,3 +174,36 @@ def crear_usuario_normal(serializer, request, tipo):
         tipo = tipo
     )
     return usuario      
+
+
+#### recuperacion de contrasena ####
+class PasswordResetRequestView(APIView):
+    def post(self, request):
+        serializer = PasswordResetRequestSerializer(data=request.data)
+        if serializer.is_valid():
+            email = serializer.validated_data['email']
+            user = get_object_or_404(User, email=email)
+            
+            uid = urlsafe_base64_encode(force_bytes(user.pk))
+            token = default_token_generator.make_token(user)
+            
+            #f"http://frontend/reset-password/{uid}/{token}/
+            reset_url = f"{config("FRONTEND_URL", default="http://frontend/reset-password/")}reset-password/{uid}/{token}/"
+            send_mail(
+                "Recuperación de Contraseña",
+                f"Usa este enlace para restablecer tu contraseña: {reset_url}",
+                "cocoon.homeapp@gmail.com",
+                [email]
+            )
+            return Response({"message": "Email enviado con instrucciones para recuperar contraseña."}, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+
+# proceso de la nueva contrasena
+class PasswordResetView(APIView):
+    def post(self, request):
+        serializer = PasswordResetSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"message": "Contraseña restablecida exitosamente."}, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
