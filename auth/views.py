@@ -188,7 +188,7 @@ class PasswordResetRequestView(APIView):
             token = default_token_generator.make_token(user)
             
             #f"http://frontend/reset-password/{uid}/{token}/
-            reset_url = f"{config("FRONTEND_URL", default="http://frontend/reset-password/")}reset-password/{uid}/{token}/"
+            reset_url = f"{config('FRONTEND_URL', default='http://frontend/reset-password/')}reset-password/{uid}/{token}/"
             send_mail(
                 "Recuperación de Contraseña",
                 f"Usa este enlace para restablecer tu contraseña: {reset_url}",
