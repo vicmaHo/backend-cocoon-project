@@ -15,6 +15,7 @@ from pathlib import Path
 #imports para despliegue
 import os
 import dj_database_url
+from google.oauth2 import service_account
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -49,6 +50,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken', # para autenticar con token
     'usuarios',
     'propiedades',
+    'storages',
 ]
 
 MIDDLEWARE = [
@@ -153,3 +155,13 @@ CORS_ALLOWED_ORIGINS = [
 
 
 #CORS_ALLOW_CREDENTIALS = True
+
+#Google Cloud Storage
+
+GS_CREDENTIALS_PATH = os.path.join('Google\coocon-f8fd0ce41f93.json')
+
+GS_CREDENTIALS = service_account.Credentials.from_service_account_file(GS_CREDENTIALS_PATH)
+
+GS_BUCKET_NAME = 'coocon'
+DEFAULT_FILE_STORAGE = "storages.backends.gcloud.GoogleCloudStorage"
+MEDIA_URL = f"https://storage.googleapis.com/{GS_BUCKET_NAME}/"

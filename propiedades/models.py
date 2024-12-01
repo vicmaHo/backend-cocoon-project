@@ -1,5 +1,6 @@
 from django.db import models
 from usuarios.models import Arrendador
+from .nube import MediaStorage
 # usar arrendador como llave foranea
 
 # Create your models here.
@@ -12,8 +13,8 @@ class Propiedad(models.Model):
     estado = models.CharField(max_length=50)
     reglas = models.TextField()
     servicios = models.TextField()
-    fotos = models.CharField(max_length=100)
-    videos = models.CharField(max_length=100)
+    fotos = models.ImageField(storage = MediaStorage(), upload_to='fotos_propiedades/')
+    videos = models.FileField(storage = MediaStorage(), upload_to='videos_propiedades/')
 
     def __str__(self):
         return f"{self.tipo_vivienda} - {self.direccion}"
