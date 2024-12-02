@@ -158,7 +158,7 @@ CORS_ALLOWED_ORIGINS = [
 
 #Google Cloud Storage
 
-GS_CREDENTIALS_PATH = os.path.join('Google\coocon-f8fd0ce41f93.json')
+GS_CREDENTIALS_PATH = os.path.join('coocon-269ac226a5e5.json')
 
 GS_CREDENTIALS = service_account.Credentials.from_service_account_file(GS_CREDENTIALS_PATH)
 

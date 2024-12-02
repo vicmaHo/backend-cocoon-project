@@ -51,6 +51,9 @@ coverage.xml
 .pytest_cache/
 cover/
 
+# google 
+coocon-269ac226a5e5.json
+
 # Translations
 *.mo
 *.pot

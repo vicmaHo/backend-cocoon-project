@@ -4,7 +4,7 @@ from google.oauth2 import service_account
 
 
 class MediaStorage(GoogleCloudStorage):
-    ruta_credenciales = 'Google\coocon-f8fd0ce41f93.json'
+    ruta_credenciales = 'coocon-269ac226a5e5.json'
     credenciales = service_account.Credentials.from_service_account_file(ruta_credenciales)
 
 # Nombre del bucket
