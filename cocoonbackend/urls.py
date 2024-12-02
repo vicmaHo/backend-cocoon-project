@@ -23,6 +23,7 @@ urlpatterns = [
     path('auth/', include('auth.urls')),
     path('', include('usuarios.urls')), # incluyo todas las urls de la carpeta usuarios
     path('', include('propiedades.urls')),
+    path('', include('reservas.urls')),
     
     
 ]
