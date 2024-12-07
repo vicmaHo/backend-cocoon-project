@@ -151,9 +151,12 @@ if not DEBUG:
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# FRONTEND_URL = config('FRONTEND_URL')
+# print(f"FRONTEND_URL loaded: {FRONTEND_URL}")
+
 # Configuración de CORS
 CORS_ALLOWED_ORIGINS = [
-    'http://localhost:5173',  # frontend local
+    config('FRONTEND_URL', default='http://localhost:5173').rstrip('/'),
 ]
 
 
