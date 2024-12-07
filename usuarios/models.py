@@ -1,5 +1,6 @@
 from django.db import models
-from django.contrib.auth.models import User 
+from django.contrib.auth.models import User
+from propiedades.nube import MediaStorage
 # Create your models here.
 class Usuario(models.Model):
     # Hare uso del usuario predefinido por Django, extendiendo sus atributos por defecto y agregando el telefono
@@ -27,7 +28,7 @@ class Arrendatario(models.Model):
     
 class Estudiante(models.Model):
     arrendatario = models.OneToOneField(Arrendatario, on_delete=models.CASCADE, primary_key=True)
-    constancia_universidad = models.CharField(max_length=100)
+    constancia_universidad = models.FileField(storage = MediaStorage(), upload_to='constancias_estudio/')
     universidad = models.CharField(max_length=100)
     
     def __str__(self):
