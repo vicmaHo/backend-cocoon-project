@@ -10,6 +10,7 @@ class Usuario(models.Model):
     # contrasena = models.CharField(max_length=20)
     telefono = models.CharField(max_length=20)
     tipo = models.CharField(max_length=20, default='')
+    profile_picture = models.ImageField(storage = MediaStorage(), upload_to='profile_pictures/', null=True, blank=True, default='profile_pictures/default.png')
     def __str__(self):
         return f"{self.user.id} - { self.user.username} - {self.tipo}"
 
