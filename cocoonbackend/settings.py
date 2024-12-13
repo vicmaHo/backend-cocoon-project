@@ -54,6 +54,8 @@ INSTALLED_APPS = [
     'propiedades',
     'reservas',
     'storages',
+    'resenas',
+    'django_filters',
 ]
 
 MIDDLEWARE = [
