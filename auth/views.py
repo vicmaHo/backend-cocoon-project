@@ -31,7 +31,7 @@ def register(request):
     que se mande en la petición.
     """
     # Compruebo si el tipo de usuario es arrendaddor
-    if request.data["is_arrendador"] == True:
+    if request.data["is_arrendador"] == 'true':
        # si es arrendador creo un User luego un Usuario y despues un Arrendador 
         user_data = extraer_datos_usuario(request)
         # Creo el serializer
@@ -61,7 +61,7 @@ def register(request):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
             
         
-    elif request.data["is_estudiante"] == True:
+    elif request.data["is_estudiante"] == 'true':
         
         user_data = extraer_datos_usuario(request)
         serializer = UserSerializer(data=user_data)
