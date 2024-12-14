@@ -5,7 +5,6 @@ from usuarios.models import Arrendatario
 
 
 class Reserva(models.Model):
-    estado = models.CharField(max_length=50)
     fecha_inicio = models.DateField()
     fecha_final = models.DateField()
     propiedad = models.ForeignKey('propiedades.Propiedad', on_delete=models.CASCADE)

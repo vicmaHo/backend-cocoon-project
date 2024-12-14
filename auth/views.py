@@ -171,7 +171,8 @@ def crear_usuario_normal(serializer, request, tipo):
     usuario = Usuario.objects.create(
         user=User.objects.get(username=serializer.data['username']),
         telefono = request.data['telefono'],
-        tipo = tipo
+        tipo = tipo,
+        profile_picture = request.data['profile_picture']
     )
     return usuario      
 

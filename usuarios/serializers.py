@@ -18,6 +18,7 @@ class ArrendatarioSerializer(serializers.ModelSerializer):
     first_name = serializers.CharField(source='usuario.user.first_name', read_only=True)
     last_name = serializers.CharField(source='usuario.user.last_name', read_only=True)
     telefono = serializers.CharField(source='usuario.telefono', read_only=True)
+    profile_picture = serializers.ImageField(source='usuario.profile_picture', read_only=True)
 
     class Meta:
         model = Arrendatario
@@ -28,7 +29,8 @@ class ArrendatarioSerializer(serializers.ModelSerializer):
             'email', 
             'first_name', 
             'last_name', 
-            'telefono'
+            'telefono',
+            'profile_picture',
         ]
 
 class EstudianteSerializer(serializers.ModelSerializer):
@@ -39,6 +41,7 @@ class EstudianteSerializer(serializers.ModelSerializer):
     first_name = serializers.CharField(source='arrendatario.usuario.user.first_name', read_only=True)
     last_name = serializers.CharField(source='arrendatario.usuario.user.last_name', read_only=True)
     telefono = serializers.CharField(source='arrendatario.usuario.telefono', read_only=True)
+    profile_picture = serializers.ImageField(source='arrendatario.usuario.profile_picture', read_only=True)
 
     class Meta:
         model = Estudiante
@@ -51,7 +54,8 @@ class EstudianteSerializer(serializers.ModelSerializer):
             'last_name', 
             'telefono', 
             'constancia_universidad', 
-            'universidad'
+            'universidad',
+            'profile_picture',
         ]
         
 class ArrendadorSerializer(serializers.ModelSerializer):
@@ -63,6 +67,7 @@ class ArrendadorSerializer(serializers.ModelSerializer):
     last_name = serializers.CharField(source='usuario.user.last_name', read_only=True)
     telefono = serializers.CharField(source='usuario.telefono', read_only=True)
     ocupacion = serializers.CharField()
+    profile_picture = serializers.ImageField(source='usuario.profile_picture', read_only=True)
 
     class Meta:
         model = Arrendador
@@ -75,4 +80,5 @@ class ArrendadorSerializer(serializers.ModelSerializer):
             'last_name', 
             'telefono', 
             'ocupacion',
+            'profile_picture',
         ]
