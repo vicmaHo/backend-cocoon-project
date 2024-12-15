@@ -56,6 +56,8 @@ INSTALLED_APPS = [
     'storages',
     'resenas',
     'django_filters',
+    #configuracion para documentacion de api
+    'drf_spectacular',
 ]
 
 MIDDLEWARE = [
@@ -183,3 +185,9 @@ GS_CREDENTIALS = service_account.Credentials.from_service_account_file(GS_CREDEN
 GS_BUCKET_NAME = 'coocon'
 DEFAULT_FILE_STORAGE = "storages.backends.gcloud.GoogleCloudStorage"
 MEDIA_URL = f"https://storage.googleapis.com/{GS_BUCKET_NAME}/"
+
+
+# configuracion para usar drf-spectacular
+REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',  
+}
