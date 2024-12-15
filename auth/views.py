@@ -18,9 +18,19 @@ from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import send_mail
 from decouple import config
 
-
+# para documentacion
+from drf_spectacular.utils import extend_schema
+from .serializer import RegisterSchemaSerializer, LoginSchemaSerializer, RegisterResponseSerializer
 
 # Create your views here.
+
+@extend_schema(
+    request=RegisterSchemaSerializer,  
+    responses=RegisterResponseSerializer,  
+    summary="Registro de usuario",
+    description="Permite registrar un nuevo usuario en el sistema.",
+    tags=["Autenticación"],
+)
 @api_view(['POST'])
 def register(request):
     
@@ -29,6 +39,7 @@ def register(request):
     Primero comprueba que tipo de usuario se va a registrar para despues crear un User de Django
     Luego crea un Usuario perteneciente al modelo propio, en base a esos crea el tipo de usuario
     que se mande en la petición.
+    @param request
     """
     # Compruebo si el tipo de usuario es arrendaddor
     if request.data["is_arrendador"] == 'true':
@@ -127,6 +138,70 @@ def register(request):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+@extend_schema(
+    request=LoginSchemaSerializer,  
+    responses={
+        201: {
+            "type": "object",
+            "properties": {
+                "token": {
+                    "type": "string",
+                    "example": "f3413fc5d98a4ad42f6bdd420dc844bdd87f4767",
+                    "description": "Token de autenticación generado para el usuario."
+                },
+                "tipo": {
+                    "type": "string",
+                    "example": "arrendatario",
+                    "description": "Tipo de usuario, por ejemplo: arrendatario."
+                },
+                "created": {
+                    "type": "boolean",
+                    "example": False,
+                    "description": "Indica si el usuario fue creado exitosamente."
+                },
+                "datos": {
+                    "type": "object",
+                    "properties": {
+                        "id": {
+                            "type": "integer",
+                            "example": 16,
+                            "description": "ID único del usuario."
+                        },
+                        "username": {
+                            "type": "string",
+                            "example": "usertest",
+                            "description": "Nombre de usuario."
+                        },
+                        "email": {
+                            "type": "string",
+                            "example": "user@gmail.com",
+                            "description": "Correo electrónico del usuario."
+                        },
+                        "last_name": {
+                            "type": "string",
+                            "example": "LastName",
+                            "description": "Apellido del usuario."
+                        },
+                        "first_name": {
+                            "type": "string",
+                            "example": "FirstName",
+                            "description": "Nombre del usuario."
+                        },
+                        "password": {
+                            "type": "string",
+                            "example": "...",
+                            "description": "Hash de la contraseña del usuario."
+                        },
+                    },
+                    "description": "Información detallada del usuario."
+                }
+            }
+        }
+    },
+    summary="Login de un usuario",
+    description="Login de un usuario generando un token de autenticación.",
+    tags=["Autenticación"],
+)
 @api_view(['POST'])
 def login(request):
     """
@@ -176,7 +251,24 @@ def crear_usuario_normal(serializer, request, tipo):
     )
     return usuario      
 
-
+@extend_schema(
+    request=PasswordResetRequestSerializer,  
+    responses={
+        200: {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "Email enviado con instrucciones para recuperar contraseña.",
+                    "description": "Mensaje de confirmación."
+                }
+            }
+        }
+    },  
+    summary="Petición de recuperación de contraseña",
+    description="Permite al usuario solicitar la recuperación de contraseña.",
+    tags=["Autenticación"],
+)
 #### recuperacion de contrasena ####
 class PasswordResetRequestView(APIView):
     def post(self, request):
@@ -200,6 +292,24 @@ class PasswordResetRequestView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 
+@extend_schema(
+    request=PasswordResetSerializer,  
+    responses={
+        200: {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "Contraseña restablecida exitosamente.",
+                    "description": "Mensaje de confirmación."
+                }
+            }
+        }
+    },  
+    summary="Reestablecimiento de contraseña",
+    description="Recibe un UID, un token y una nueva contraseña para restablecer la contraseña.",
+    tags=["Autenticación"],
+)
 # proceso de la nueva contrasena
 class PasswordResetView(APIView):
     def post(self, request):

@@ -191,3 +191,10 @@ MEDIA_URL = f"https://storage.googleapis.com/{GS_BUCKET_NAME}/"
 REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',  
 }
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'API para la aplicación Cocoon-Home',
+    'DESCRIPTION': 'Documentación de la API para la gestión de propiedades, reservas y usuarios.',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': True,  
+}

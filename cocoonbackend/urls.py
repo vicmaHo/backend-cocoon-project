@@ -19,7 +19,6 @@ from django.urls import path, include
 # configuracion para documentacion de api
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView, SpectacularRedocView
 
-
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('auth/', include('auth.urls')),

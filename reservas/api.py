@@ -9,7 +9,39 @@ from django.conf import settings
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import TokenAuthentication
 
+from drf_spectacular.utils import extend_schema_view, extend_schema
+
+# separación de las rutas en doc swagger
+@extend_schema_view(
+    list=extend_schema(
+        summary="Listado de todas las reservas",
+        description="Obtener una lista completa de todas las reservas.",
+        tags=["Reservas"]
+        ),
+    retrieve=extend_schema(
+        summary="Detalles de una reserva",
+        description="Obtener detalles de una reserva específica.",
+        tags=["Reservas"]
+        ),
+    create=extend_schema(
+        summary="Crear una nueva reserva",
+        description="Crear una nueva reserva.",
+        tags=["Reservas"]
+        ),
+    update=extend_schema(
+        summary="Actualizar una reserva",
+        description="Actualizar una reserva existente.",
+        tags=["Reservas"]
+        ),
+    destroy=extend_schema(
+        summary="Eliminar una reserva",
+        description="Eliminar una reserva existente.",
+        tags=["Reservas"]
+        ),
+    partial_update=extend_schema(tags=["Reservas"]),
+)
 class ReservaViewSet(viewsets.ModelViewSet):
+
     queryset= Reserva.objects.all()
     serializer_class = ReservaSerializer
     authentication_classes = [TokenAuthentication]  # Autenticación por token
